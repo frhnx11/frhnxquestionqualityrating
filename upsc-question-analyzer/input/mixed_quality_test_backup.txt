@@ -1,0 +1,199 @@
+Subject:INDIAN PHYSICAL GEOGRAPHY Topic:INDIAN CLIMATOLOGY Subtopic:El-Nino and La-Nina
+
+**QUESTION 1**
+--------------------
+**Q:** Consider the following statements regarding El Niño:
+1. It is a warm ocean current that develops periodically along the coast of Peru.
+2. The term 'El Niño' is a Spanish word that refers to the baby Christ.
+3. This current is a temporary replacement for the cold Peruvian current.
+4. The development of this current is associated with the Christmas season.
+Which of the statements given above is/are correct?
+
+   A. 1 and 3 only
+   B. 2 and 4 only
+   C. 1, 2, 3 and 4
+   D. 1 only
+
+**Correct Answer:** C. 1, 2, 3 and 4
+
+**Explanation:** El Niño is defined as the periodic development of a warm ocean current that flows along the coast of Peru, serving as a temporary replacement for the normally present cold Peruvian current. The name 'El Niño' is a Spanish term meaning 'the child,' which alludes to the baby Christ because the current's flow typically begins around Christmas time. Therefore, all four statements are correct based on the provided information.
+
+============================================================
+
+**QUESTION 2**
+--------------------
+**Q:** Consider the following statements regarding the Southern Oscillation (SO) and its connection to the Indian Monsoon:
+1. The SO is a periodic change in pressure conditions over the southern oceans.
+2. Normally, the tropical eastern south Pacific Ocean experiences high pressure while the tropical eastern Indian Ocean experiences low pressure.
+3. A negative pressure difference between Tahiti and Darwin is computed to predict above-average and early monsoons.
+4. The El Niño phenomenon is a feature connected with the Southern Oscillation.
+Which of the statements given above is/are correct?
+
+   A. 1, 2 and 4
+   B. 2 and 3 only
+   C. 3 and 4 only
+   D. 1 and 3 only
+
+**Correct Answer:** A. 1, 2 and 4
+
+**Explanation:** The Southern Oscillation (SO) is a periodic shift in pressure conditions over the southern oceans. Under normal conditions, high pressure prevails over the tropical eastern south Pacific Ocean, while low pressure is experienced in the tropical eastern Indian Ocean. The El Niño phenomenon is explicitly linked to the SO. However, a negative pressure difference between Tahiti and Darwin indicates below-average and late monsoons, not above-average and early ones. Thus, statements 1, 2, and 4 are correct.
+
+============================================================
+
+**QUESTION 3**
+--------------------
+**Q:** With reference to the phenomenon of ENSO (El Niño Southern Oscillations), consider the following statements:
+1. The presence of El Niño leads to a decrease in sea-surface temperatures.
+2. The development of El Niño causes a strengthening of the trade winds in the region.
+3. ENSO refers to the connection between changes in pressure conditions and the El Niño phenomenon.
+4. El Niño is a warm ocean current that flows past the Peruvian Coast every 2 to 5 years.
+Which of the statements given above is/are correct?
+
+   A. 1 and 2 only
+   B. 1, 2 and 3
+   C. 2 and 4 only
+   D. 3 and 4 only
+
+**Correct Answer:** D. 3 and 4 only
+
+**Explanation:** The presence of El Niño results in an increase, not a decrease, in sea-surface temperatures. It also leads to a weakening, not a strengthening, of the trade winds in the region. The term ENSO (El Niño Southern Oscillations) specifically refers to the connection between the changes in pressure conditions (the Southern Oscillation) and the El Niño phenomenon. El Niño is described as a warm ocean current that appears off the Peruvian coast every 2 to 5 years. Therefore, only statements 3 and 4 are correct.
+
+============================================================
+
+**QUESTION 4**
+--------------------
+**Q:** Consider the following statements about the characteristics and effects of El Niño:
+1. It is a permanent development of a warm ocean current along the coast of Peru.
+2. It occurs in place of the warm Peruvian current.
+3. Its presence leads to an increase in sea-surface temperatures.
+4. It is associated with the weakening of the trade winds in the region.
+Which of the statements given above is/are correct?
+
+   A. 1 and 2 only
+   B. 3 and 4 only
+   C. 1, 3 and 4
+   D. 2 and 3 only
+
+**Correct Answer:** B. 3 and 4 only
+
+**Explanation:** El Niño is a periodic and temporary, not permanent, development. It occurs as a replacement for the cold Peruvian current, not a warm one. The presence of the El Niño current does lead to an increase in sea-surface temperatures and a weakening of the trade winds in the affected region. Consequently, statements 3 and 4 are correct, while 1 and 2 are incorrect.
+
+============================================================
+
+**QUESTION 5**
+--------------------
+**Q:** Which of the following statements correctly describe the Southern Oscillation (SO)?
+1. It refers to a periodic reversal in pressure conditions over the southern oceans.
+2. During a reversal, the eastern Pacific has lower pressure compared to the eastern Indian Ocean.
+3. The pressure difference over Tahiti (Pacific Ocean) and Darwin (Indian Ocean) is used to predict monsoon intensity.
+4. The Southern Oscillation is an entirely separate phenomenon from El Niño.
+Which of the statements given above is/are correct?
+
+   A. 1 and 4 only
+   B. 2 and 3 only
+   C. 1, 2 and 3
+   D. 3 and 4 only
+
+**Correct Answer:** C. 1, 2 and 3
+
+**Explanation:** The Southern Oscillation is a periodic change in pressure conditions over the southern oceans. In certain years, a reversal occurs where the eastern Pacific experiences lower pressure in comparison to the eastern Indian Ocean. The difference in pressure between Tahiti in the Pacific Ocean and Darwin in the Indian Ocean is computed to predict the intensity of the monsoons. El Niño is explicitly mentioned as a feature connected with the SO, not separate from it. Therefore, statements 1, 2, and 3 are correct.
+
+============================================================
+
+**QUESTION 6**
+--------------------
+**Q:** Consider the following statements related to the prediction of the Indian Monsoon:
+1. The difference in pressure over Tahiti and Darwin is computed to predict the intensity of the monsoons.
+2. Tahiti is located in the Indian Ocean, while Darwin is in the Pacific Ocean.
+3. If the computed pressure difference is negative, it indicates below-average and late monsoons.
+4. The periodic change in pressure conditions used for this prediction is known as the Southern Oscillation.
+Which of the statements given above is/are correct?
+
+   A. 1, 3 and 4
+   B. 1 and 2 only
+   C. 2 and 3 only
+   D. All of the above
+
+**Correct Answer:** A. 1, 3 and 4
+
+**Explanation:** The intensity of the monsoons is predicted by computing the pressure difference between Tahiti, which is in the Pacific Ocean (18°S/149°W), and Darwin in northern Australia, which is in the Indian Ocean (12°30’S/131°E). Therefore, the locations in statement 2 are reversed. A negative value for this pressure difference suggests that the monsoons will be below average and late. This periodic change in pressure is known as the Southern Oscillation. Thus, statements 1, 3, and 4 are correct.
+
+============================================================
+
+**QUESTION 7**
+--------------------
+**Q:** Based on the provided context on Indian climatology, consider the following statements:
+1. The phenomenon referred to as ENSO combines the concepts of El Niño and the Southern Oscillation.
+2. El Niño is a cold ocean current that appears every 2 to 5 years.
+3. The Southern Oscillation involves a reversal of pressure conditions between the eastern Pacific and eastern Indian Oceans.
+4. A negative pressure difference in the Southern Oscillation index implies a strong and timely monsoon.
+Which of the statements given above is/are correct?
+
+   A. 2 and 4 only
+   B. 1 and 2 only
+   C. 3 and 4 only
+   D. 1 and 3 only
+
+**Correct Answer:** D. 1 and 3 only
+
+**Explanation:** The phenomenon ENSO (El Niño Southern Oscillations) is so named because it connects the changes in pressure conditions (Southern Oscillation) to the El Niño event. El Niño is a warm ocean current, not a cold one. The Southern Oscillation is indeed characterized by a periodic reversal in pressure conditions, where in certain years the eastern Pacific has lower pressure than the eastern Indian Ocean. A negative pressure difference is associated with below-average and late monsoons, not strong and timely ones. Therefore, statements 1 and 3 are correct.
+
+============================================================
+
+**QUESTION 8**
+--------------------
+**Q:** Consider the following statements regarding the geographical and temporal aspects of El Niño and the Southern Oscillation:
+1. The El Niño current flows past the Peruvian Coast.
+2. The Southern Oscillation is measured using pressure data from Tahiti in the Pacific Ocean and Darwin in the Indian Ocean.
+3. El Niño is a recurring phenomenon, happening every 2 to 5 years.
+4. The name 'El Niño' is linked to the current's appearance during the Easter festival.
+Which of the statements given above is/are correct?
+
+   A. 1 and 4 only
+   B. 1, 2 and 3
+   C. 2 and 3 only
+   D. All of the above
+
+**Correct Answer:** B. 1, 2 and 3
+
+**Explanation:** El Niño is a warm ocean current that flows past the coast of Peru. The Southern Oscillation's intensity is computed by taking the pressure difference between Tahiti (Pacific Ocean) and Darwin (Indian Ocean). This phenomenon occurs periodically, every 2 to 5 years. The name 'El Niño' refers to the baby Christ because the current starts flowing during Christmas, not Easter. Therefore, statements 1, 2, and 3 are correct.
+
+============================================================
+
+**QUESTION 9**
+--------------------
+**Q:** Which of the following statements accurately reflects the relationship between pressure systems and El Niño as described in the text?
+1. Under normal conditions, the tropical eastern south Pacific Ocean experiences low pressure.
+2. In certain years, a reversal occurs, and the eastern Pacific has lower pressure than the eastern Indian Ocean.
+3. This periodic change in pressure conditions is known as the Southern Oscillation.
+4. El Niño is a direct consequence of the strengthening of the cold Peruvian current.
+Which of the statements given above is/are correct?
+
+   A. 2 and 3 only
+   B. 1 and 4 only
+   C. 1, 2 and 3
+   D. 3 and 4 only
+
+**Correct Answer:** A. 2 and 3 only
+
+**Explanation:** Normally, the tropical eastern south Pacific Ocean experiences high pressure, not low pressure. A key feature of the Southern Oscillation is the reversal of these conditions in certain years, where the eastern Pacific experiences lower pressure compared to the eastern Indian Ocean. This periodic change is indeed called the Southern Oscillation. El Niño is a warm current that temporarily replaces the cold Peruvian current; it is not a consequence of the cold current strengthening. Therefore, only statements 2 and 3 are correct.
+
+============================================================
+
+**QUESTION 10**
+--------------------
+**Q:** Consider the following statements regarding the combined phenomenon of ENSO:
+1. The 'SO' in ENSO stands for Southern Oscillations.
+2. The El Niño component involves the periodic development of a warm ocean current.
+3. The presence of El Niño leads to an increase in sea-surface temperatures and a weakening of trade winds.
+4. ENSO is a feature connected with pressure changes over the southern oceans.
+Which of the statements given above is/are correct?
+
+   A. 1 and 2 only
+   B. 3 and 4 only
+   C. 1, 2, 3 and 4
+   D. 1, 2 and 4 only
+
+**Correct Answer:** C. 1, 2, 3 and 4
+
+**Explanation:** The term ENSO stands for El Niño Southern Oscillations, where 'SO' refers to the Southern Oscillation, a periodic change in pressure conditions over the southern oceans. The El Niño part of ENSO is the periodic development of a warm ocean current. This event leads to an increase in sea-surface temperatures and a weakening of the regional trade winds. The entire phenomenon is connected to the changes in pressure conditions over the southern oceans. Thus, all four statements are correct.

@@ -1,0 +1,28 @@
+{
+  "openai": {
+    "api_key": "YOUR_OPENAI_API_KEY_HERE",
+    "model": "gpt-3.5-turbo"
+  },
+  "ollama": {
+    "model": "gemma2:9b",
+    "base_url": "http://localhost:11434",
+    "timeout": 120
+  },
+  "input": {
+    "folder": "input",
+    "file_pattern": "*.txt"
+  },
+  "output": {
+    "folder": "output",
+    "excel_filename": "analysis_results.xlsx"
+  },
+  "analysis": {
+    "batch_size": 5,
+    "max_retries": 3,
+    "retry_delay": 2
+  },
+  "excel": {
+    "auto_save_interval": 30,
+    "sheet_name": "UPSC Question Analysis"
+  }
+}
