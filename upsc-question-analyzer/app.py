@@ -12,6 +12,17 @@ import time
 from datetime import datetime
 import json
 
+# Helper function to get resource path (defined early for use throughout)
+def get_resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    if getattr(sys, 'frozen', False):
+        # Running in PyInstaller bundle
+        base_path = sys._MEIPASS
+    else:
+        # Running in normal Python environment
+        base_path = os.path.dirname(__file__)
+    return os.path.join(base_path, relative_path)
+
 # Add src to path
 if getattr(sys, 'frozen', False):
     # Running in PyInstaller bundle
@@ -30,17 +41,6 @@ from excel_generator import ExcelGenerator
 
 app = Flask(__name__)
 app.secret_key = 'upsc_analyzer_secret_key_2024'
-
-# Helper function to get resource path
-def get_resource_path(relative_path):
-    """Get absolute path to resource, works for dev and for PyInstaller"""
-    if getattr(sys, 'frozen', False):
-        # Running in PyInstaller bundle
-        base_path = sys._MEIPASS
-    else:
-        # Running in normal Python environment
-        base_path = os.path.dirname(__file__)
-    return os.path.join(base_path, relative_path)
 
 # Version information
 try:
@@ -107,6 +107,8 @@ class WebAnalysisSession:
             # Setup Excel generator
             excel_config = self.config.copy()
             excel_config['output']['excel_filename'] = f"analysis_{self.session_id}.xlsx"
+            # Update output folder to use absolute path
+            excel_config['output']['folder'] = get_resource_path(excel_config['output']['folder'])
             
             excel_generator = ExcelGenerator(excel_config)
             self.excel_path = excel_generator.get_excel_path()
@@ -386,7 +388,8 @@ def open_browser():
 
 if __name__ == '__main__':
     # Create output directory if it doesn't exist
-    os.makedirs('output', exist_ok=True)
+    output_dir = get_resource_path('output')
+    os.makedirs(output_dir, exist_ok=True)
     
     print("🚀 Starting UPSC Question Quality Analyzer Web Server")
     print("💡 Opening your browser to: http://localhost:5000")
