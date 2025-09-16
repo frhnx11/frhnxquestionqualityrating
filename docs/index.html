@@ -278,12 +278,6 @@
                     <a href="#" class="download-btn" id="mac-download">Download for macOS</a>
                 </div>
                 
-                <div class="platform-card" id="linux-card">
-                    <div class="platform-icon">🐧</div>
-                    <div class="platform-name">Linux</div>
-                    <div class="platform-size">~40 MB</div>
-                    <a href="#" class="download-btn" id="linux-download">Download for Linux</a>
-                </div>
             </div>
         </div>
         
@@ -358,7 +352,6 @@
         // Set download links
         document.getElementById('windows-download').href = RELEASE_BASE + 'UPSC-Analyzer-Windows.zip';
         document.getElementById('mac-download').href = RELEASE_BASE + 'UPSC-Analyzer-macOS.zip';
-        document.getElementById('linux-download').href = RELEASE_BASE + 'UPSC-Analyzer-Linux.tar.gz';
         
         // Add analytics or download tracking if needed
         document.querySelectorAll('.download-btn').forEach(btn => {

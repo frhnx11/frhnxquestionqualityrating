@@ -9,12 +9,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-latest, macos-latest]
+        os: [windows-latest, macos-latest]
         include:
-          - os: ubuntu-20.04
-            artifact_name: upsc-question-analyzer
-            asset_name: UPSC-Analyzer-Linux
-            asset_extension: tar.gz
           - os: windows-latest
             artifact_name: UPSC-Question-Analyzer.exe
             asset_name: UPSC-Analyzer-Windows
@@ -60,12 +56,6 @@ jobs:
         cd dist
         zip -r "../../${{ matrix.asset_name }}.${{ matrix.asset_extension }}" "${{ matrix.artifact_name }}"
 
-    - name: Prepare Linux artifact
-      if: matrix.os == 'ubuntu-20.04'
-      working-directory: ./upsc-question-analyzer
-      run: |
-        chmod +x "dist/${{ matrix.artifact_name }}"
-        tar -czf "../${{ matrix.asset_name }}.${{ matrix.asset_extension }}" -C dist "${{ matrix.artifact_name }}"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -113,7 +103,6 @@ jobs:
           ### 📦 Downloads
           - **Windows**: `UPSC-Analyzer-Windows.zip`
           - **macOS**: `UPSC-Analyzer-macOS.zip`
-          - **Linux**: `UPSC-Analyzer-Linux.tar.gz`
           
           ### 📋 System Requirements
           - RAM: 16GB recommended
@@ -126,4 +115,3 @@ jobs:
         files: |
           artifacts/UPSC-Analyzer-Windows/UPSC-Analyzer-Windows.zip
           artifacts/UPSC-Analyzer-macOS/UPSC-Analyzer-macOS.zip
-          artifacts/UPSC-Analyzer-Linux/UPSC-Analyzer-Linux.tar.gz
