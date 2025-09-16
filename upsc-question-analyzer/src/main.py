@@ -15,10 +15,18 @@ import signal
 # Add src to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from question_parser import QuestionParser, Question
-from ollama_analyzer import OllamaAnalyzer, AnalysisResult
-from excel_generator import ExcelGenerator
-from progress_tracker import ProgressTracker, SimpleProgressTracker
+try:
+    # Try relative imports first (for when running as module)
+    from .question_parser import QuestionParser, Question
+    from .ollama_analyzer import OllamaAnalyzer, AnalysisResult
+    from .excel_generator import ExcelGenerator
+    from .progress_tracker import ProgressTracker, SimpleProgressTracker
+except ImportError:
+    # Fall back to absolute imports (for when running standalone or in PyInstaller)
+    from question_parser import QuestionParser, Question
+    from ollama_analyzer import OllamaAnalyzer, AnalysisResult
+    from excel_generator import ExcelGenerator
+    from progress_tracker import ProgressTracker, SimpleProgressTracker
 
 class UPSCAnalyzer:
     def __init__(self, config_path: str = 'config/config.json'):

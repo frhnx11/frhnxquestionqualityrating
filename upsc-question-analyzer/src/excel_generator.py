@@ -4,7 +4,12 @@ from openpyxl.utils import get_column_letter
 from typing import List, Dict
 import os
 from datetime import datetime
-from ollama_analyzer import AnalysisResult
+try:
+    # Try relative import first (for when running as module)
+    from .ollama_analyzer import AnalysisResult
+except ImportError:
+    # Fall back to absolute import (for when running standalone or in PyInstaller)
+    from ollama_analyzer import AnalysisResult
 
 class ExcelGenerator:
     def __init__(self, config: Dict):

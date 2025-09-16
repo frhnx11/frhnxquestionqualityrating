@@ -32,7 +32,7 @@ class OllamaAnalyzer:
         
         # Load system prompt
         # Get the correct path for bundled or development environment
-        if hasattr(sys, '_MEIPASS'):
+        if getattr(sys, 'frozen', False):
             # Running as bundled executable
             prompt_path = os.path.join(sys._MEIPASS, 'config', 'system_prompt_enhanced.txt')
         else:

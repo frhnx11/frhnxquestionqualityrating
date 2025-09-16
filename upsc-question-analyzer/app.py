@@ -107,8 +107,13 @@ class WebAnalysisSession:
             # Setup Excel generator
             excel_config = self.config.copy()
             excel_config['output']['excel_filename'] = f"analysis_{self.session_id}.xlsx"
-            # Update output folder to use absolute path
-            excel_config['output']['folder'] = get_resource_path(excel_config['output']['folder'])
+            # Update output folder based on execution context
+            if getattr(sys, 'frozen', False):
+                # For bundled executable, use output next to executable
+                excel_config['output']['folder'] = os.path.join(os.path.dirname(sys.executable), 'output')
+            else:
+                # In development, use relative path
+                excel_config['output']['folder'] = 'output'
             
             excel_generator = ExcelGenerator(excel_config)
             self.excel_path = excel_generator.get_excel_path()
@@ -388,7 +393,12 @@ def open_browser():
 
 if __name__ == '__main__':
     # Create output directory if it doesn't exist
-    output_dir = get_resource_path('output')
+    if getattr(sys, 'frozen', False):
+        # For bundled executable, create output next to the executable
+        output_dir = os.path.join(os.path.dirname(sys.executable), 'output')
+    else:
+        # In development, use current directory
+        output_dir = 'output'
     os.makedirs(output_dir, exist_ok=True)
     
     print("🚀 Starting UPSC Question Quality Analyzer Web Server")
