@@ -1,5 +1,4 @@
-# import ollama  # Commented for OpenAI
-import openai
+import ollama
 import json
 import time
 import re
@@ -22,17 +21,10 @@ class AnalysisResult:
 
 class OllamaAnalyzer:
     def __init__(self, config: Dict):
-        # OpenAI configuration
-        if 'openai' in config:
-            self.api_key = config['openai'].get('api_key', os.getenv('OPENAI_API_KEY'))
-            self.model = config['openai'].get('model', 'gpt-3.5-turbo')
-            openai.api_key = self.api_key
-        else:
-            # Fallback to Ollama config (commented out)
-            # self.model = config['ollama']['model']
-            # self.base_url = config['ollama']['base_url']
-            # self.timeout = config['ollama']['timeout']
-            self.model = 'gpt-3.5-turbo'  # Default OpenAI model
+        # Ollama configuration
+        self.model = config['ollama']['model']
+        self.base_url = config['ollama']['base_url']
+        self.timeout = config['ollama']['timeout']
             
         self.max_retries = config['analysis']['max_retries']
         self.retry_delay = config['analysis']['retry_delay']
@@ -56,8 +48,8 @@ Now analyze this question:
 Please provide your analysis in the exact table format specified above. Make sure to fill ALL columns completely.
 """
                 
-                # Send to OpenAI (Ollama code commented below)
-                response = openai.ChatCompletion.create(
+                # Send to Ollama
+                response = ollama.chat(
                     model=self.model,
                     messages=[
                         {
@@ -65,24 +57,9 @@ Please provide your analysis in the exact table format specified above. Make sur
                             'content': analysis_prompt
                         }
                     ],
-                    temperature=0.1  # Low temperature for consistent analysis
+                    options={'temperature': 0.1}
                 )
-                
-                # Parse the response
-                analysis_text = response.choices[0].message.content
-                
-                # Original Ollama code (commented):
-                # response = ollama.chat(
-                #     model=self.model,
-                #     messages=[
-                #         {
-                #             'role': 'user',
-                #             'content': analysis_prompt
-                #         }
-                #     ],
-                #     options={'temperature': 0.1}
-                # )
-                # analysis_text = response['message']['content']
+                analysis_text = response['message']['content']
                 result = self._parse_analysis_response(analysis_text, question_text)
                 
                 if result:
@@ -189,37 +166,25 @@ Please provide your analysis in the exact table format specified above. Make sur
             return None
     
     def test_connection(self) -> bool:
-        """Test if OpenAI API is accessible"""
+        """Test if Ollama is accessible"""
         try:
-            # Test OpenAI connection
-            response = openai.ChatCompletion.create(
+            # Test Ollama connection
+            response = ollama.chat(
                 model=self.model,
-                messages=[{'role': 'user', 'content': 'Test'}],
-                max_tokens=5,
-                temperature=0
+                messages=[{'role': 'user', 'content': 'Test connection'}],
+                options={'temperature': 0}
             )
             return True
-            
-            # Original Ollama code (commented):
-            # response = ollama.chat(
-            #     model=self.model,
-            #     messages=[{'role': 'user', 'content': 'Test connection'}],
-            #     options={'temperature': 0}
-            # )
-            # return True
         except Exception as e:
-            print(f"OpenAI connection test failed: {e}")
+            print(f"Ollama connection test failed: {e}")
             return False
     
     def get_available_models(self) -> List[str]:
         """Get list of available models"""
         try:
-            # OpenAI models
-            return ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo-preview']
-            
-            # Original Ollama code (commented):
-            # models = ollama.list()
-            # return [model['name'] for model in models['models']]
+            # Get Ollama models
+            models = ollama.list()
+            return [model['name'] for model in models['models']]
         except Exception as e:
             print(f"Error getting available models: {e}")
             return []

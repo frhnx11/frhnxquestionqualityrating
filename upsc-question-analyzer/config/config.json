@@ -1,8 +1,4 @@
 {
-  "openai": {
-    "api_key": "YOUR_OPENAI_API_KEY_HERE",
-    "model": "gpt-3.5-turbo"
-  },
   "ollama": {
     "model": "gemma2:9b",
     "base_url": "http://localhost:11434",
