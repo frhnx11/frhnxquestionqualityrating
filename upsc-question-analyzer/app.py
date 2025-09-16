@@ -297,11 +297,64 @@ def pull_model(model_name):
         'message': 'Run this command in your terminal to download the model'
     })
 
+@app.route('/debug/paths')
+def debug_paths():
+    """Debug endpoint to check paths"""
+    paths_info = {
+        'frozen': getattr(sys, 'frozen', False),
+        'cwd': os.getcwd(),
+        'script_dir': os.path.dirname(__file__),
+    }
+    
+    if getattr(sys, 'frozen', False):
+        paths_info['_MEIPASS'] = sys._MEIPASS
+        paths_info['executable'] = sys.executable
+        paths_info['exe_dir'] = os.path.dirname(sys.executable)
+        
+        # Check what's in _MEIPASS
+        meipass_contents = {}
+        for item in os.listdir(sys._MEIPASS):
+            item_path = os.path.join(sys._MEIPASS, item)
+            if os.path.isdir(item_path):
+                meipass_contents[item] = 'directory'
+            else:
+                meipass_contents[item] = 'file'
+        paths_info['meipass_contents'] = meipass_contents
+        
+        # Check if config exists
+        config_path = os.path.join(sys._MEIPASS, 'config', 'config.json')
+        paths_info['config_path'] = config_path
+        paths_info['config_exists'] = os.path.exists(config_path)
+        
+        if os.path.exists(os.path.join(sys._MEIPASS, 'config')):
+            paths_info['config_dir_contents'] = os.listdir(os.path.join(sys._MEIPASS, 'config'))
+    
+    return jsonify(paths_info)
+
 @app.route('/health')
 def health_check():
     try:
         # Check if Ollama is accessible
         config_path = get_resource_path('config/config.json')
+        
+        # Debug: Log the path being used
+        print(f"DEBUG: Looking for config at: {config_path}")
+        print(f"DEBUG: File exists: {os.path.exists(config_path)}")
+        print(f"DEBUG: Current working directory: {os.getcwd()}")
+        if getattr(sys, 'frozen', False):
+            print(f"DEBUG: Running as frozen executable")
+            print(f"DEBUG: sys._MEIPASS: {sys._MEIPASS}")
+            print(f"DEBUG: sys.executable: {sys.executable}")
+            # List contents of _MEIPASS
+            print(f"DEBUG: Contents of _MEIPASS:")
+            for root, dirs, files in os.walk(sys._MEIPASS):
+                level = root.replace(sys._MEIPASS, '').count(os.sep)
+                indent = ' ' * 2 * level
+                print(f"{indent}{os.path.basename(root)}/")
+                sub_indent = ' ' * 2 * (level + 1)
+                for file in files[:10]:  # Limit to first 10 files per directory
+                    print(f"{sub_indent}{file}")
+        
         with open(config_path, 'r') as f:
             config = json.load(f)
         
