@@ -22,6 +22,13 @@ from excel_generator import ExcelGenerator
 app = Flask(__name__)
 app.secret_key = 'upsc_analyzer_secret_key_2024'
 
+# Version information
+try:
+    with open('version.txt', 'r') as f:
+        __version__ = f.read().strip()
+except:
+    __version__ = '1.0.0'
+
 # Global storage for analysis sessions
 analysis_sessions = {}
 
@@ -201,6 +208,66 @@ def download_excel(session_id):
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
+@app.route('/models')
+def list_models():
+    try:
+        with open('config/config.json', 'r') as f:
+            config = json.load(f)
+        
+        analyzer = OllamaAnalyzer(config)
+        
+        try:
+            available_models = analyzer.get_available_models()
+            required_model = config['ollama']['model']
+            
+            # Format model information
+            model_info = []
+            for model in available_models:
+                model_info.append({
+                    'name': model,
+                    'is_required': model == required_model,
+                    'is_compatible': model in ['gemma2:9b', 'llama3.1:8b', 'mistral:7b', 'gemma:7b']
+                })
+            
+            return jsonify({
+                'success': True,
+                'models': model_info,
+                'required_model': required_model,
+                'total_models': len(available_models)
+            })
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': 'Cannot connect to Ollama',
+                'message': str(e)
+            }), 503
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/ollama/pull/<model_name>', methods=['POST'])
+def pull_model(model_name):
+    """Endpoint to trigger model pull (returns command, doesn't execute)"""
+    # Validate model name
+    allowed_models = ['gemma2:9b', 'llama3.1:8b', 'mistral:7b', 'gemma:7b']
+    
+    if model_name not in allowed_models:
+        return jsonify({
+            'success': False,
+            'error': 'Model not in allowed list',
+            'allowed_models': allowed_models
+        }), 400
+    
+    return jsonify({
+        'success': True,
+        'model': model_name,
+        'command': f'ollama pull {model_name}',
+        'message': 'Run this command in your terminal to download the model'
+    })
+
 @app.route('/health')
 def health_check():
     try:
@@ -209,25 +276,107 @@ def health_check():
             config = json.load(f)
         
         analyzer = OllamaAnalyzer(config)
-        ollama_status = analyzer.test_connection()
+        
+        # Get detailed status
+        ollama_connected = False
+        available_models = []
+        model_available = False
+        required_model = config['ollama']['model']
+        
+        try:
+            # Test basic connection
+            ollama_connected = analyzer.test_connection()
+            
+            if ollama_connected:
+                # Get available models
+                available_models = analyzer.get_available_models()
+                model_available = required_model in available_models
+        except Exception as conn_error:
+            ollama_connected = False
+        
+        # Prepare installation instructions based on OS
+        installation_instructions = {
+            'windows': {
+                'download_url': 'https://ollama.com/download/windows',
+                'steps': [
+                    'Download Ollama from https://ollama.com/download/windows',
+                    'Run the installer',
+                    'Open Command Prompt or PowerShell',
+                    f'Run: ollama pull {required_model}'
+                ]
+            },
+            'mac': {
+                'download_url': 'https://ollama.com/download/mac',
+                'steps': [
+                    'Download Ollama from https://ollama.com/download/mac',
+                    'Install the application',
+                    'Open Terminal',
+                    f'Run: ollama pull {required_model}'
+                ]
+            },
+            'linux': {
+                'download_url': 'https://ollama.com/download/linux',
+                'steps': [
+                    'Open Terminal',
+                    'Run: curl -fsSL https://ollama.com/install.sh | sh',
+                    f'Run: ollama pull {required_model}'
+                ]
+            }
+        }
+        
+        # Determine status and next steps
+        if ollama_connected and model_available:
+            status = 'ready'
+            message = 'Ollama is connected and model is available'
+        elif ollama_connected and not model_available:
+            status = 'model_missing'
+            message = f'Ollama is connected but model {required_model} is not installed'
+        else:
+            status = 'ollama_not_found'
+            message = 'Ollama is not running or not installed'
         
         return jsonify({
-            'status': 'healthy',
-            'ollama_connected': ollama_status,
-            'model': config['ollama']['model']
+            'status': status,
+            'message': message,
+            'ollama_connected': ollama_connected,
+            'model_available': model_available,
+            'required_model': required_model,
+            'available_models': available_models,
+            'installation_instructions': installation_instructions,
+            'model_pull_command': f'ollama pull {required_model}',
+            'alternative_models': ['llama3.1:8b', 'mistral:7b', 'gemma:7b'] if not model_available else [],
+            'app_version': __version__
         })
     except Exception as e:
         return jsonify({
             'status': 'error',
+            'message': f'Health check failed: {str(e)}',
             'error': str(e)
         }), 500
+
+def open_browser():
+    """Open the web browser after a short delay"""
+    import webbrowser
+    import time
+    time.sleep(2)  # Wait for server to start
+    webbrowser.open('http://localhost:5000')
 
 if __name__ == '__main__':
     # Create output directory if it doesn't exist
     os.makedirs('output', exist_ok=True)
     
     print("🚀 Starting UPSC Question Quality Analyzer Web Server")
-    print("💡 Open your browser and go to: http://localhost:5000")
+    print("💡 Opening your browser to: http://localhost:5000")
     print("⚠️  Make sure Ollama is running before analyzing questions")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Start browser opening in a separate thread
+    browser_thread = threading.Thread(target=open_browser, daemon=True)
+    browser_thread.start()
+    
+    # Check if running from PyInstaller bundle
+    if getattr(sys, 'frozen', False):
+        # Running in a bundle
+        app.run(debug=False, host='127.0.0.1', port=5000, use_reloader=False)
+    else:
+        # Running in normal Python environment
+        app.run(debug=True, host='0.0.0.0', port=5000)

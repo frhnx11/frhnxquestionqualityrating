@@ -1,0 +1,147 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v1.0.0
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-20.04
+            artifact_name: upsc-question-analyzer
+            asset_name: UPSC-Analyzer-Linux
+            asset_extension: tar.gz
+          - os: windows-latest
+            artifact_name: UPSC-Question-Analyzer.exe
+            asset_name: UPSC-Analyzer-Windows
+            asset_extension: zip
+          - os: macos-latest
+            artifact_name: UPSC Question Analyzer.app
+            asset_name: UPSC-Analyzer-macOS
+            asset_extension: zip
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller upsc-analyzer.spec --noconfirm --clean
+
+    - name: Prepare Windows artifact
+      if: matrix.os == 'windows-latest'
+      run: |
+        Compress-Archive -Path "dist\${{ matrix.artifact_name }}" -DestinationPath "${{ matrix.asset_name }}.${{ matrix.asset_extension }}"
+      shell: powershell
+
+    - name: Prepare macOS artifact
+      if: matrix.os == 'macos-latest'
+      run: |
+        cd dist
+        zip -r "../${{ matrix.asset_name }}.${{ matrix.asset_extension }}" "${{ matrix.artifact_name }}"
+        cd ..
+
+    - name: Prepare Linux artifact
+      if: matrix.os == 'ubuntu-20.04'
+      run: |
+        chmod +x "dist/${{ matrix.artifact_name }}"
+        tar -czf "${{ matrix.asset_name }}.${{ matrix.asset_extension }}" -C dist "${{ matrix.artifact_name }}"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.asset_name }}
+        path: ${{ matrix.asset_name }}.${{ matrix.asset_extension }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: UPSC Question Analyzer ${{ github.ref_name }}
+        body: |
+          ## UPSC Question Quality Analyzer ${{ github.ref_name }}
+          
+          ### 🚀 What's New
+          - Enhanced Ollama connection detection
+          - Automatic setup instructions
+          - Improved user experience
+          
+          ### 📥 Installation
+          
+          1. **Download** the appropriate file for your system below
+          2. **Install Ollama** from https://ollama.com
+          3. **Download the AI model**: `ollama pull gemma2:9b`
+          4. **Run** the application
+          
+          ### 📦 Downloads
+          - **Windows**: `UPSC-Analyzer-Windows.zip`
+          - **macOS**: `UPSC-Analyzer-macOS.zip`
+          - **Linux**: `UPSC-Analyzer-Linux.tar.gz`
+          
+          ### 📋 System Requirements
+          - RAM: 16GB recommended
+          - Storage: 10GB free space
+          - Ollama installed and running
+          
+          See [README_OLLAMA_SETUP.md](https://github.com/${{ github.repository }}/blob/main/README_OLLAMA_SETUP.md) for detailed instructions.
+        draft: false
+        prerelease: false
+
+    - name: Upload Windows Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./UPSC-Analyzer-Windows/UPSC-Analyzer-Windows.zip
+        asset_name: UPSC-Analyzer-Windows.zip
+        asset_content_type: application/zip
+
+    - name: Upload macOS Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./UPSC-Analyzer-macOS/UPSC-Analyzer-macOS.zip
+        asset_name: UPSC-Analyzer-macOS.zip
+        asset_content_type: application/zip
+
+    - name: Upload Linux Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./UPSC-Analyzer-Linux/UPSC-Analyzer-Linux.tar.gz
+        asset_name: UPSC-Analyzer-Linux.tar.gz
+        asset_content_type: application/gzip

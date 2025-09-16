@@ -248,6 +248,65 @@
             color: #721c24;
         }
         
+        .status-ready {
+            background: #d1f2eb;
+            color: #0f5132;
+        }
+        
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .setup-step {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+        
+        .copy-command {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: monospace;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .copy-command:hover {
+            background: #34495e;
+        }
+        
+        .model-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .model-item {
+            padding: 8px;
+            margin: 4px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .model-compatible {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+        }
+        
+        .model-required {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+        }
+        
         .example-box {
             background: #f8f9fa;
             border-left: 4px solid #3498db;
@@ -289,9 +348,21 @@
         <div class="header">
             <h1>🎯 UPSC Question Quality Analyzer</h1>
             <p>Analyze your UPSC questions using AI and get detailed quality reports</p>
+            <div id="ollamaStatus" style="margin-top: 20px;">
+                <span class="status-indicator" id="ollamaIndicator">
+                    <span>⏳</span>
+                    <span id="ollamaStatusText">Checking Ollama connection...</span>
+                </span>
+            </div>
         </div>
         
         <div class="content">
+            <!-- Ollama Setup Guide (Initially Hidden) -->
+            <div id="ollamaSetupGuide" class="example-box" style="display: none; background: #fff3cd; border-left-color: #ffc107;">
+                <h3>🚀 Ollama Setup Required</h3>
+                <div id="setupInstructions"></div>
+            </div>
+            
             <form id="analysisForm">
                 <div class="form-row">
                     <div class="form-group">
@@ -546,18 +617,127 @@ Which statements are correct?
             }
         }
 
-        // Health check on page load
-        window.addEventListener('load', async function() {
+        // Function to check Ollama status
+        async function checkOllamaStatus() {
             try {
                 const response = await fetch('/health');
                 const health = await response.json();
                 
-                if (!health.ollama_connected) {
-                    showError(`Ollama not connected. Make sure Ollama is running and the model '${health.model}' is available.`);
+                const ollamaIndicator = document.getElementById('ollamaIndicator');
+                const ollamaStatusText = document.getElementById('ollamaStatusText');
+                const analyzeBtn = document.getElementById('analyzeBtn');
+                const setupGuide = document.getElementById('ollamaSetupGuide');
+                const setupInstructions = document.getElementById('setupInstructions');
+                
+                // Reset classes
+                ollamaIndicator.className = 'status-indicator';
+                
+                if (health.status === 'ready') {
+                    ollamaIndicator.classList.add('status-ready');
+                    ollamaStatusText.innerHTML = '✅ Ollama Ready';
+                    analyzeBtn.disabled = false;
+                    setupGuide.style.display = 'none';
+                } else if (health.status === 'model_missing') {
+                    ollamaIndicator.classList.add('status-warning');
+                    ollamaStatusText.innerHTML = '⚠️ Model Not Installed';
+                    analyzeBtn.disabled = true;
+                    
+                    // Show model installation guide
+                    setupGuide.style.display = 'block';
+                    setupInstructions.innerHTML = `
+                        <p><strong>Ollama is running but the required model is not installed.</strong></p>
+                        <p>Run this command in your terminal to install the model:</p>
+                        <div class="copy-command" onclick="copyToClipboard('${health.model_pull_command}')">
+                            ${health.model_pull_command}
+                            <span style="float: right;">📋 Click to copy</span>
+                        </div>
+                        ${health.available_models.length > 0 ? `
+                        <div class="model-list">
+                            <strong>Available models on your system:</strong>
+                            ${health.available_models.map(model => `<div class="model-item">${model}</div>`).join('')}
+                        </div>
+                        ` : ''}
+                        <p>Alternative compatible models you can use:</p>
+                        <div class="model-list">
+                            ${health.alternative_models.map(model => 
+                                `<div class="model-item model-compatible">
+                                    ${model}
+                                    <button onclick="copyToClipboard('ollama pull ${model}')" 
+                                            style="background: #4CAF50; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">
+                                        Install
+                                    </button>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    `;
+                } else if (health.status === 'ollama_not_found') {
+                    ollamaIndicator.classList.add('status-error');
+                    ollamaStatusText.innerHTML = '❌ Ollama Not Found';
+                    analyzeBtn.disabled = true;
+                    
+                    // Show installation guide
+                    const platform = detectPlatform();
+                    const instructions = health.installation_instructions[platform];
+                    
+                    setupGuide.style.display = 'block';
+                    setupInstructions.innerHTML = `
+                        <p><strong>Ollama is not installed or not running on your system.</strong></p>
+                        <h4>📥 Installation Steps for ${platform.toUpperCase()}:</h4>
+                        ${instructions.steps.map((step, i) => 
+                            `<div class="setup-step">${i + 1}. ${step}</div>`
+                        ).join('')}
+                        <p style="margin-top: 20px;">
+                            <a href="${instructions.download_url}" target="_blank" 
+                               class="download-btn" style="padding: 12px 24px;">
+                                Download Ollama for ${platform.toUpperCase()}
+                            </a>
+                        </p>
+                        <p style="margin-top: 15px;">After installation, refresh this page to check the connection.</p>
+                    `;
+                } else {
+                    ollamaIndicator.classList.add('status-error');
+                    ollamaStatusText.innerHTML = '❌ Error';
+                    analyzeBtn.disabled = true;
                 }
+                
             } catch (error) {
-                console.warn('Health check failed:', error);
+                const ollamaIndicator = document.getElementById('ollamaIndicator');
+                const ollamaStatusText = document.getElementById('ollamaStatusText');
+                
+                ollamaIndicator.className = 'status-indicator status-error';
+                ollamaStatusText.innerHTML = '❌ Connection Error';
+                console.error('Ollama status check failed:', error);
             }
+        }
+        
+        // Function to detect platform
+        function detectPlatform() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            if (userAgent.includes('win')) return 'windows';
+            if (userAgent.includes('mac')) return 'mac';
+            return 'linux';
+        }
+        
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show temporary success message
+                const originalText = event.target.innerHTML;
+                event.target.innerHTML = '✅ Copied!';
+                setTimeout(() => {
+                    event.target.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy. Please manually copy the command.');
+            });
+        }
+        
+        // Check Ollama status on page load and periodically
+        window.addEventListener('load', function() {
+            checkOllamaStatus();
+            // Check every 5 seconds
+            setInterval(checkOllamaStatus, 5000);
         });
     </script>
 </body>
