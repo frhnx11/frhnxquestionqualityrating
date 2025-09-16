@@ -13,7 +13,16 @@ from datetime import datetime
 import json
 
 # Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+if getattr(sys, 'frozen', False):
+    # Running in PyInstaller bundle
+    base_path = sys._MEIPASS
+    src_path = os.path.join(base_path, 'src')
+else:
+    # Running in normal Python environment
+    base_path = os.path.dirname(__file__)
+    src_path = os.path.join(base_path, 'src')
+
+sys.path.insert(0, src_path)
 
 from question_parser import QuestionParser
 from ollama_analyzer import OllamaAnalyzer
@@ -22,9 +31,20 @@ from excel_generator import ExcelGenerator
 app = Flask(__name__)
 app.secret_key = 'upsc_analyzer_secret_key_2024'
 
+# Helper function to get resource path
+def get_resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    if getattr(sys, 'frozen', False):
+        # Running in PyInstaller bundle
+        base_path = sys._MEIPASS
+    else:
+        # Running in normal Python environment
+        base_path = os.path.dirname(__file__)
+    return os.path.join(base_path, relative_path)
+
 # Version information
 try:
-    with open('version.txt', 'r') as f:
+    with open(get_resource_path('version.txt'), 'r') as f:
         __version__ = f.read().strip()
 except:
     __version__ = '1.0.0'
@@ -44,7 +64,8 @@ class WebAnalysisSession:
         self.completed = False
         
         # Load config
-        with open('config/config.json', 'r') as f:
+        config_path = get_resource_path('config/config.json')
+        with open(config_path, 'r') as f:
             self.config = json.load(f)
     
     def add_message(self, message):
@@ -211,7 +232,8 @@ def download_excel(session_id):
 @app.route('/models')
 def list_models():
     try:
-        with open('config/config.json', 'r') as f:
+        config_path = get_resource_path('config/config.json')
+        with open(config_path, 'r') as f:
             config = json.load(f)
         
         analyzer = OllamaAnalyzer(config)
@@ -272,7 +294,8 @@ def pull_model(model_name):
 def health_check():
     try:
         # Check if Ollama is accessible
-        with open('config/config.json', 'r') as f:
+        config_path = get_resource_path('config/config.json')
+        with open(config_path, 'r') as f:
             config = json.load(f)
         
         analyzer = OllamaAnalyzer(config)

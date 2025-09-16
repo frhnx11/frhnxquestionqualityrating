@@ -3,6 +3,7 @@ import json
 import time
 import re
 import os
+import sys
 from typing import Dict, Optional, List
 from dataclasses import dataclass
 
@@ -30,7 +31,15 @@ class OllamaAnalyzer:
         self.retry_delay = config['analysis']['retry_delay']
         
         # Load system prompt
-        with open('config/system_prompt_enhanced.txt', 'r', encoding='utf-8') as f:
+        # Get the correct path for bundled or development environment
+        if hasattr(sys, '_MEIPASS'):
+            # Running as bundled executable
+            prompt_path = os.path.join(sys._MEIPASS, 'config', 'system_prompt_enhanced.txt')
+        else:
+            # Running in development
+            prompt_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'system_prompt_enhanced.txt')
+        
+        with open(prompt_path, 'r', encoding='utf-8') as f:
             self.system_prompt = f.read()
     
     def analyze_question(self, question_text: str) -> Optional[AnalysisResult]:
