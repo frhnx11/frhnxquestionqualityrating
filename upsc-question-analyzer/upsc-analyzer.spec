@@ -10,6 +10,7 @@ block_cipher = None
 datas = [
     ('templates', 'templates'),
     ('config', 'config'),
+    ('src', 'src'),
     ('README_OLLAMA_SETUP.md', '.'),
 ]
 
@@ -23,6 +24,10 @@ hiddenimports = [
     'jinja2',
     'werkzeug',
     'click',
+    'question_parser',
+    'ollama_analyzer',
+    'excel_generator',
+    'progress_tracker',
 ]
 
 # Collect all package data
@@ -34,7 +39,7 @@ for package in packages_to_collect:
 
 a = Analysis(
     ['app.py'],
-    pathex=[],
+    pathex=['src'],
     binaries=[],
     datas=datas,
     hiddenimports=hiddenimports,
