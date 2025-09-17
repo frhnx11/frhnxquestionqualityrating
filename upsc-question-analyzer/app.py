@@ -106,7 +106,13 @@ class WebAnalysisSession:
             
             # Setup Excel generator
             excel_config = self.config.copy()
-            excel_config['output']['excel_filename'] = f"analysis_{self.session_id}.xlsx"
+            # Sanitize subtopic name for filename (remove invalid characters)
+            safe_subtopic = "".join(c for c in subtopic if c.isalnum() or c in (' ', '-', '_')).rstrip()
+            safe_subtopic = safe_subtopic.replace(' ', '_')
+            # Fallback to session_id if subtopic becomes empty after sanitization
+            if not safe_subtopic:
+                safe_subtopic = f"analysis_{self.session_id}"
+            excel_config['output']['excel_filename'] = f"{safe_subtopic}.xlsx"
             # Update output folder based on execution context
             if getattr(sys, 'frozen', False):
                 # For bundled executable, use output next to executable
