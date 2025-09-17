@@ -739,6 +739,17 @@ Which statements are correct?
             // Check every 5 seconds
             setInterval(checkOllamaStatus, 5000);
         });
+
+        // Shutdown server when window is closed
+        window.addEventListener('beforeunload', function(e) {
+            // Call shutdown endpoint
+            fetch('/shutdown', {
+                method: 'POST',
+                keepalive: true
+            }).catch(() => {
+                // Ignore errors - server might already be shutting down
+            });
+        });
     </script>
 </body>
 </html>

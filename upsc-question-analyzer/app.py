@@ -9,6 +9,8 @@ import sys
 import uuid
 import threading
 import time
+import signal
+import atexit
 from datetime import datetime
 import json
 
@@ -443,6 +445,26 @@ def health_check():
             'error': str(e)
         }), 500
 
+@app.route('/shutdown', methods=['POST'])
+def shutdown():
+    """Shutdown the server"""
+    try:
+        # Send response first
+        response = jsonify({'message': 'Server shutting down...'})
+        
+        # Schedule shutdown after a brief delay
+        def delayed_shutdown():
+            time.sleep(1)
+            os._exit(0)
+        
+        shutdown_thread = threading.Thread(target=delayed_shutdown)
+        shutdown_thread.daemon = True
+        shutdown_thread.start()
+        
+        return response
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 def open_browser():
     """Open the web browser after a short delay"""
     import webbrowser
@@ -450,7 +472,19 @@ def open_browser():
     time.sleep(2)  # Wait for server to start
     webbrowser.open('http://localhost:5000')
 
+def signal_handler(signum, frame):
+    """Handle Ctrl+C and other termination signals"""
+    print("\n🛑 Shutting down server...")
+    os._exit(0)
+
 if __name__ == '__main__':
+    # Set up signal handlers for graceful shutdown
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    # Register cleanup function
+    atexit.register(lambda: print("🛑 Server stopped"))
+    
     # Create output directory if it doesn't exist
     if getattr(sys, 'frozen', False):
         # For bundled executable, create output next to the executable
@@ -463,15 +497,20 @@ if __name__ == '__main__':
     print("🚀 Starting UPSC Question Quality Analyzer Web Server")
     print("💡 Opening your browser to: http://localhost:5000")
     print("⚠️  Make sure Ollama is running before analyzing questions")
+    print("⚠️  Close the browser window to stop the server")
     
     # Start browser opening in a separate thread
     browser_thread = threading.Thread(target=open_browser, daemon=True)
     browser_thread.start()
     
-    # Check if running from PyInstaller bundle
-    if getattr(sys, 'frozen', False):
-        # Running in a bundle
-        app.run(debug=False, host='127.0.0.1', port=5000, use_reloader=False)
-    else:
-        # Running in normal Python environment
-        app.run(debug=True, host='0.0.0.0', port=5000)
+    try:
+        # Check if running from PyInstaller bundle
+        if getattr(sys, 'frozen', False):
+            # Running in a bundle
+            app.run(debug=False, host='127.0.0.1', port=5000, use_reloader=False)
+        else:
+            # Running in normal Python environment
+            app.run(debug=True, host='0.0.0.0', port=5000)
+    except KeyboardInterrupt:
+        print("\n🛑 Server stopped by user")
+        os._exit(0)
